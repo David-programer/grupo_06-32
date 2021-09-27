@@ -205,7 +205,7 @@ export default {
             {
             icon: 'mdi-information-outline',
             title: 'Acerca de',
-            path: '/messages'
+            path: '/about'
             }
         ],
         itemsVariant: [
@@ -227,7 +227,7 @@ export default {
             {
             icon: 'mdi-information-outline',
             title: 'Acerca de',
-            path: '/info'
+            path: '/about'
             }
         ]
     }),

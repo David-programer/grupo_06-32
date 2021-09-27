@@ -6,20 +6,21 @@
         align-center
     >
         <v-card-title class="text-h6 font-weight-regular justify-space-between">
-        <span>{{ currentTitle }}</span>
-        <v-avatar
-            color="primary lighten-2"
-            class="subheading white--text"
-            size="24"
-            v-text="step"
-        ></v-avatar>
+            <span>{{ currentTitle }}</span>
+            <v-avatar
+                color="primary lighten-2"
+                class="subheading white--text"
+                size="24"
+                v-text="step"
+            ></v-avatar>
         </v-card-title>
 
         <v-window v-model="step">
         <v-window-item :value="1">
             <v-card-text>
-            <v-text-field
+            <v-text-field 
                 label="Correo electronico"
+                v-model="user.email"
                 outlined
                 clearable
             ></v-text-field>
@@ -32,22 +33,26 @@
         <v-window-item :value="2">
             <v-card-text>
             <v-text-field
+                v-model="user.name"
                 label="Nombre"
                 :rules ="r1"
                 outlined
                 clearable
             ></v-text-field>
             <v-text-field
+                v-model="user.phone"
                 label="Telefono"
                 outlined
                 clearable
             ></v-text-field>
             <v-text-field
+                v-model="user.country"
                 label="Pais"
                 outlined
                 clearable
             ></v-text-field>
             <v-text-field
+                v-model="user.city"
                 label="Ciudad"
                 outlined
                 clearable
@@ -61,9 +66,9 @@
         <v-window-item :value="3">
             <v-card-text>
                 <v-text-field
-                v-model="password"
+                v-model="user.password"
                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="[rules.required, rules.min]"
+                :rules="[rules.required]"
                 :type="show1 ? 'text' : 'password'"
                 name="input-10-1"
                 label="Contraseña"
@@ -110,7 +115,7 @@
             :disabled="step === 4"
             color="primary"
             depressed
-            @click="step++"
+            @click="step === 3 ? createUser() :step++"
         >
             Siguente
         </v-btn>
@@ -122,10 +127,17 @@
 <script>
     export default {
         data: () => ({
-        step: 1,
+            user:{
+                name: null,
+                email: null,
+                phone: null,
+                country: null,
+                city: null,
+                password: null
+            },
+            step: 1,
             checkbox: false,
             show1: false,
-            password: "",
             r1:[
                     value => !!value || 'Requerido.'
             ],
@@ -134,11 +146,10 @@
             ],
             rules: {
                 required: value => !!value || 'Requerido.',
-                min: v => v.length >= 8 || 'Min 8 caracteres',
+                min: value => value.length >= 8 || 'Min 8 caracteres',
                 emailMatch: () => (`el correo o la contraseña no coinciden`),
             },
         }),
-
         computed: {
         currentTitle () {
             switch (this.step) {
@@ -149,5 +160,18 @@
             }
         },
         },
+        methods: {
+            async createUser(){
+                let {name, email, phone, country, city, password} = this.user;
+                
+                const request = await fetch('http://192.168.43.252:3000/user', {
+                    method: 'POST',
+                    body: JSON.stringify({name, email, phone, country, city, password}),
+                    headers: {'Content-Type': 'application/json'}
+                });
+                console.log(request);
+                this.step++
+            }
+        }
     }
 </script>

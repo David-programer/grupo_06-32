@@ -51,8 +51,8 @@
 
         <!-- Inico de botones -->
         <v-row class="justify-center">
-            <v-btn class="white--text ma-2" color="#0BC6AB"> Sign In </v-btn>
-            <v-btn class="ma-2" outlined color="#0BC6AB"> Sign Up </v-btn>
+            <v-btn class="white--text ma-2" color="#0BC6AB">Iniciar Sesión</v-btn>
+            <v-btn class="ma-2" outlined color="#0BC6AB" @click="$router.push('/sign-up')">Registrarse</v-btn>
         </v-row>
         <!--Final de botones-->
         </v-container>

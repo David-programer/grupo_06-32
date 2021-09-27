@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    registered: localStorage.getItem('registered'),
+    registered: localStorage.getItem('registered') === null ? 'false' :localStorage.getItem('registered'),
     user: {
       name: "Sofía Tabares",
       nickname: "Sofi",
