@@ -5,10 +5,11 @@
         width="400"
         align-center
     >
+        <v-alert dense outlined type="error" v-if="error">{{error}}</v-alert>
         <v-card-title class="text-h6 font-weight-regular justify-space-between">
             <span>{{ currentTitle }}</span>
             <v-avatar
-                color="primary lighten-2"
+                color="#00A3FF"
                 class="subheading white--text"
                 size="24"
                 v-text="step"
@@ -20,7 +21,7 @@
             <v-card-text>
             <v-text-field 
                 label="Correo electronico"
-                v-model="user.email"
+                v-model="$store.state.user.email"
                 outlined
                 clearable
             ></v-text-field>
@@ -33,26 +34,26 @@
         <v-window-item :value="2">
             <v-card-text>
             <v-text-field
-                v-model="user.name"
+                v-model="$store.state.user.name"
                 label="Nombre"
                 :rules ="r1"
                 outlined
                 clearable
             ></v-text-field>
             <v-text-field
-                v-model="user.phone"
+                v-model="$store.state.user.phone"
                 label="Telefono"
                 outlined
                 clearable
             ></v-text-field>
             <v-text-field
-                v-model="user.country"
+                v-model="$store.state.user.country"
                 label="Pais"
                 outlined
                 clearable
             ></v-text-field>
             <v-text-field
-                v-model="user.city"
+                v-model="$store.state.user.city"
                 label="Ciudad"
                 outlined
                 clearable
@@ -64,9 +65,38 @@
         </v-window-item>
 
         <v-window-item :value="3">
+            <v-card-text class="d-flex align-center flex-column">
+                <v-avatar size="110">
+                    <v-img :src="imageUrl.length >=1 ? imageUrl : imageDefault"/>
+                </v-avatar>
+				<v-text-field 
+                    label="SUBIR" 
+                    outlined
+                    dense
+                    style="margin-top:20px; min-width: 200px"
+                    @click='pickFile' 
+                    v-model='imageName' 
+                    prepend-icon='mdi-cloud-upload'>
+                </v-text-field>
+				<input
+					type="file"
+					style="display: none"
+					ref="image"
+					accept="image/*"
+					@change="onFilePicked"
+				/>
+            </v-card-text>
+            <v-card-text>
+                <span class="text-caption grey--text text--darken-1">
+                    Sube un avatar para tu perfíl
+                </span>
+            </v-card-text>
+        </v-window-item>
+
+        <v-window-item :value="4">
             <v-card-text>
                 <v-text-field
-                v-model="user.password"
+                v-model="$store.state.user.password"
                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :rules="[rules.required]"
                 :type="show1 ? 'text' : 'password'"
@@ -84,7 +114,7 @@
             </v-card-text>
         </v-window-item>
 
-        <v-window-item :value="4">
+        <v-window-item :value="5">
             <div class="pa-4 text-center">
             <v-img
                 class="mb-4"
@@ -104,7 +134,7 @@
 
         <v-card-actions>
         <v-btn
-            :disabled="step === 1"
+            :disabled="step === 1 || step === 5"
             text
             @click="step--"
         >
@@ -112,12 +142,12 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-            :disabled="step === 4"
-            color="primary"
+            class="white--text"
+            color="#00A3FF"
             depressed
-            @click="step === 3 ? createUser() :step++"
+            @click="validarCampos()"
         >
-            Siguente
+            {{step > 4 ?'Iniciar':'Siguente'}}
         </v-btn>
         </v-card-actions>
     </v-card>
@@ -125,17 +155,11 @@
 </template>
 
 <script>
-    export default {
+import config from '../config';
+export default {
         data: () => ({
-            user:{
-                name: null,
-                email: null,
-                phone: null,
-                country: null,
-                city: null,
-                password: null
-            },
             step: 1,
+            error: null,
             checkbox: false,
             show1: false,
             r1:[
@@ -149,29 +173,84 @@
                 min: value => value.length >= 8 || 'Min 8 caracteres',
                 emailMatch: () => (`el correo o la contraseña no coinciden`),
             },
+            imageName: '',
+		    imageUrl: '',
+		    imageFile: '',
+            imageDefault: `${config.server}/public/avatars/avatarDefault.png`
         }),
         computed: {
         currentTitle () {
             switch (this.step) {
             case 1: return 'Registrarse'
             case 2: return 'Datos personales'
+            case 3: return 'Selecciona un avatar'
             case 3: return 'Crea una contraseña'
             default: return 'Cuenta creada'
             }
-        },
-        },
+        }},
         methods: {
+            validarCampos(){
+                this.error = null;
+                try {
+                    if(this.step === 1){
+                        if(this.$store.state.user.email == null || !this.$store.state.user.email.includes('@') || !this.$store.state.user.email.includes('.com')){
+                        throw 'Digite un correo válido'
+                    }} else if(this.step === 2){
+                        if(this.$store.state.user.name == null){
+                        throw 'Digite un nombre válido'
+                    }}else if(this.step === 4){
+                        if(this.$store.state.user.password == null || this.$store.state.user.password.length < 8){
+                        throw 'Digite una contraseña válida'
+                        }if(!this.createUser()){
+                        throw 'Error al guardar el usuario, intentalo más tarde'
+                    }}else if(this.step === 5){
+                            this.$router.push('/');
+                    }this.step++
+                } catch (error) {
+                    this.error = error;
+                }
+            },
             async createUser(){
-                let {name, email, phone, country, city, password} = this.user;
-                
-                const request = await fetch('http://192.168.43.252:3000/user', {
+                const formdata = new FormData();
+                for (const key in this.$store.state.user) {
+                    if(key == 'avatar') continue
+                    formdata.append(`${key}`,this.$store.state.user[key])
+                }
+                formdata.append(`avatar`, this.imageFile);
+
+                const request = await fetch(`${config.server}/user`, {
                     method: 'POST',
-                    body: JSON.stringify({name, email, phone, country, city, password}),
-                    headers: {'Content-Type': 'application/json'}
+                    body: formdata
                 });
-                console.log(request);
-                this.step++
-            }
-        }
-    }
+                let resultado = await request.json();
+                if(resultado.status !== 200) return false
+                localStorage.setItem('registered', true);
+                localStorage.setItem('id', resultado.id);
+                this.$store.dispatch('readUser');
+                this.$store.state.registered = 'true';
+                return true;
+            },
+            pickFile () {
+                this.$refs.image.click()
+            },
+            onFilePicked (e) {
+			const files = e.target.files
+			if(files[0] !== undefined) {
+				this.imageName = files[0].name
+				if(this.imageName.lastIndexOf('.') <= 0) {
+					return
+				}
+				const fr = new FileReader ()
+				fr.readAsDataURL(files[0])
+				fr.addEventListener('load', () => {
+					this.imageUrl = fr.result
+					this.imageFile = files[0] // this is an image file that can be sent to server...
+				})
+			} else {
+				this.imageName = ''
+				this.imageFile = ''
+				this.imageUrl = ''
+			}
+		}}
+}
 </script>

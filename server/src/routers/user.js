@@ -1,23 +1,39 @@
 const { Router } = require('express');
+const path = require('path');
+const multer = require('multer');
+
+const { PORT, HOST } = require('../config');
 const user = require('../models/user');
 const cors = require('cors');
 const router = Router();
 
-router.use(cors({origin: 'http://192.168.43.252:8080'}));
+//settings multer
+let storage = multer.diskStorage({
+    destination: path.join(__dirname, '../public', 'avatars'),
+    filename: (req, file, cb)=>{
+        cb(null, file.originalname);
+    }
+});
+const upload = multer({ storage });
 
-router.route('/')
-    .get(async (req, res)=>{
-        const newUser = new user({name : 'carlos'});
-        await newUser.save();
-        res.send('hole');
-    })
-    .post(async (req, res)=>{
+//midlewars
+router.use(cors({origin: `${HOST}:8080`}));
+
+router.post('/',upload.single('avatar'), async (req, res)=>{
         let {name, email, phone, country, city, password} = req.body;
-        console.log({name, email, phone, country, city, password});
-        
-        const newUser = new user({name, email, phone, country, city, password});
+        let avatar = req.file == undefined 
+            ?`${HOST}:${PORT}/public/avatars/defaultavatar.png`
+            :`${HOST}:${PORT}/public/avatars/${req.file.filename}`;
+        const newUser = new user({name, email, phone, country, city, password, avatar});
         await newUser.save();
-        res.sendStatus(200).end();
+        const id = await user.find({email});
+        res.json({status: 200, id: id[0]._id, userAvatar: id[0].avatar});
+    });
+
+router.route('/:id')
+    .get(async (req, res)=>{
+        const readUser = await user.findById(req.params.id);
+        res.json(readUser).end();
     })
 
 module.exports = router;

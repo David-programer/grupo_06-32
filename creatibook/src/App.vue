@@ -18,7 +18,10 @@ import NavBar from './components/NavBar.vue';
 
 export default {
   beforeCreate(){
-    localStorage.getItem('registered') === null ? localStorage.setItem('registered', false) : localStorage.getItem('registered');
+    localStorage.getItem('registered') === null 
+      ? localStorage.setItem('registered', false) 
+      : localStorage.getItem('registered') == 'true' ? this.$store.dispatch('readUser') : '';
+    
   },
   name: 'App',
   data: () => ({}),

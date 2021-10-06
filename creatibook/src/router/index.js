@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import SignUp from '../views/SignUp.vue'
 import About from '../views/About.vue'
+import Notifications from '../views/Notifications.vue'
+import Configuration from '../views/Configuration'
 
 Vue.use(VueRouter)
 
@@ -28,6 +30,16 @@ const routes = [
     name: 'About',
     component: About
   },
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    component: Notifications
+  },
+  {
+    path: '/configuration',
+    name: 'Configuration',
+    component: Configuration
+  }
 ]
 
 /*

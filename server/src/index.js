@@ -3,22 +3,24 @@
 const express = require('express');
 const morgan = require('morgan');
 const { mongoose } = require('./database');
+const { PORT, HOST } = require('./config');
 const path = require('path');
 const app = express();
 
-
-//settings
-app.set('port', process.env.PORT || 3000);
 
 //midlewars
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-//routers 
+//static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+//routers
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/user', require(path.join(__dirname, '/routers/user')));
 
 //server initial
-app.listen(app.get('port'), ()=>{
-    console.log(`server listening on port http://localhost:${app.get('port')}`);
+app.listen(PORT, ()=>{
+    console.log('\x1b[36m%s\x1b[0m',`server listening on port ${HOST}:${PORT}`);
 });

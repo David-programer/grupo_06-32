@@ -31,7 +31,7 @@
                     >
                     <v-avatar size="30">
                         <v-icon v-if="$store.state.registered == 'false'">mdi-account-circle</v-icon>
-                        <img v-if="$store.state.registered == 'true'" :src="$store.state.user.avatar"/>
+                        <v-img v-if="$store.state.registered == 'true'" :src="$store.state.user.avatar"/>
                     </v-avatar>
                     </v-btn>
                 </template>
@@ -40,15 +40,15 @@
                     <v-list>
                         <v-list-item>
                             <v-list-item-avatar>
-                                <img :src="$store.state.user.avatar" :alt="$store.state.user.name"/>
+                                <v-img :src="$store.state.user.avatar" :alt="$store.state.user.name"/>
                             </v-list-item-avatar>
 
                             <v-list-item-content>
-                                <v-list-item-title>{{$store.state.user.nickname}}</v-list-item-title>
-                                <v-list-item-subtitle>{{$store.state.user.name}}</v-list-item-subtitle>
+                                <v-list-item-title>{{$store.state.user.name}}</v-list-item-title>
+                                <v-list-item-subtitle>{{$store.state.user.email}}</v-list-item-subtitle>
                             </v-list-item-content>
                         </v-list-item>
-                        <v-list-item link dense>
+                        <v-list-item link dense @click="$router.push('/notifications'); menu = false">
                             <v-list-item-icon>
                                 <v-icon left>mdi-bell</v-icon>
                             </v-list-item-icon>
@@ -123,11 +123,11 @@
             <v-list nav dense v-if="$store.state.registered == 'true'">
                 <v-list-item>
                     <v-list-item-avatar>
-                        <img :src="$store.state.user.avatar" :alt="$store.state.user.name">
+                        <v-img :src="$store.state.user.avatar" :alt="$store.state.user.name"/>
                     </v-list-item-avatar>
                     <v-list-item-content>
-                        <v-list-item-title>{{$store.state.user.nickname}}</v-list-item-title>
-                        <v-list-item-subtitle>{{$store.state.user.name}}</v-list-item-subtitle>
+                        <v-list-item-title>{{$store.state.user.name}}</v-list-item-title>
+                        <v-list-item-subtitle>{{$store.state.user.email}}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
                 <v-divider></v-divider>
@@ -195,7 +195,7 @@ export default {
             {
             icon: 'mdi-cog-outline',
             title: 'Configuración',
-            path: '/configuracion'
+            path: '/configuration'
             },
             {
             icon: 'mdi-logout',
