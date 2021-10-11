@@ -19,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //routers
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/user', require(path.join(__dirname, '/routers/user')));
+app.use('/publication', require(path.join(__dirname, '/routers/publication')));
 
 //server initial
 app.listen(PORT, ()=>{

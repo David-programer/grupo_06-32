@@ -4,6 +4,7 @@
         class="mx-auto"
         width="400"
         align-center
+        outlined
     >
         <v-alert dense outlined type="error" v-if="error">{{error}}</v-alert>
         <v-card-title class="text-h6 font-weight-regular justify-space-between">
@@ -176,7 +177,7 @@ export default {
             imageName: '',
 		    imageUrl: '',
 		    imageFile: '',
-            imageDefault: `${config.server}/public/avatars/avatarDefault.png`
+            imageDefault: `${config.server}/public/avatars/defaultavatar.png`
         }),
         computed: {
         currentTitle () {

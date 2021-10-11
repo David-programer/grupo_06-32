@@ -10,7 +10,7 @@
     <!--imagen de perfil-->
     <div class="d-flex flex-column align-center">
         <v-avatar size="100">
-          <img :src="$store.state.user.avatar">
+          <v-img :src="$store.state.user.avatar"/>
         </v-avatar>
         <!--boton de cambiar imagen-->
         <v-spacer></v-spacer>

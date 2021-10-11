@@ -36,4 +36,14 @@ router.route('/:id')
         res.json(readUser).end();
     })
 
+router.post('/sign-up', async (req, res)=>{
+    const request = await user.find({email: req.body.email});
+    if( request.length >= 1){
+        request[0].password == req.body.password ? res.json({ status: 200, validation: true, id: request[0]._id}).end() : res.json({ status: 200, validation: false}).end();
+    }else{
+        res.json({ status: 404 }).end();
+    }
+});
+
+
 module.exports = router;

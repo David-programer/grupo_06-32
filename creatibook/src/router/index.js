@@ -6,6 +6,7 @@ import SignUp from '../views/SignUp.vue'
 import About from '../views/About.vue'
 import Notifications from '../views/Notifications.vue'
 import Configuration from '../views/Configuration'
+import MyProfile from '../views/MyProfile.vue'
 
 Vue.use(VueRouter)
 
@@ -39,6 +40,11 @@ const routes = [
     path: '/configuration',
     name: 'Configuration',
     component: Configuration
+  },
+  {
+    path: '/user-page',
+    name: 'My Profile',
+    component: MyProfile
   }
 ]
 
