@@ -37,5 +37,20 @@ router.route('/:id')
         const readPublications = await publication.find({idUser: req.params.id});
         res.json(readPublications).end();
     })
+    .put(upload.single('publication'),async (req, res)=>{
+        let {name, email, idUser} = req.body;
+        let url = `${HOST}:${PORT}/public/publications/${req.file.filename}`;
+        await publication.findByIdAndUpdate(req.params.id, {name, email, idUser, url});
+        res.json({status: 200}).end();
+    })
+    .delete(async (req, res)=>{
+        await publication.findByIdAndRemove(req.params.id);
+        res.send('ok').end();
+    });
+
+router.get('/read/:id', async (req, res)=>{
+    const readPublication = await publication.findById(req.params.id);
+    res.json(readPublication).end();
+})
 
 module.exports = router;

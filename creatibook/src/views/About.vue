@@ -80,7 +80,7 @@
                 <v-card class="mx-auto" max-width="344" outlined>
                   <v-list-item three-line>
                     <v-avatar>
-                      <img src="" alt="Ramiro" style="object-fit: cover">
+                      <img src="../assets/Ramiro.jpeg" alt="Ramiro" style="object-fit: cover">
                     </v-avatar>
                     <v-list-item-content>
                       <p style="font-weight: bold;padding-right: 118px;padding-top: 15px">Ramiro</p>
@@ -95,7 +95,7 @@
                 <v-card class="mx-auto" max-width="344" outlined>
                   <v-list-item three-line>
                     <v-avatar>
-                      <img src="" alt="Kelly" style="object-fit: cover">
+                      <img src="../assets/kelly.jpeg" alt="Kelly" style="object-fit: cover">
                     </v-avatar>
                     <v-list-item-content>
                       <p style="font-weight: bold; padding-right:95px; padding-top:15px">Kelly Vergara</p>

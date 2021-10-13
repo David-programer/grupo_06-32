@@ -34,7 +34,7 @@ router.route('/:id')
     .get(async (req, res)=>{
         const readUser = await user.findById(req.params.id);
         res.json(readUser).end();
-    })
+    });
 
 router.post('/sign-up', async (req, res)=>{
     const request = await user.find({email: req.body.email});
